@@ -8,8 +8,9 @@ os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 yrange=28
 xrange=80
 
-if shutil.get_terminal_size()[0]<(xrange+1) or shutil.get_terminal_size()[1]<(yrange+1):
-  print("AW, terminal must be at least 81x29 to play the slidy puzzle. :(")
+#if shutil.get_terminal_size()[0]<(xrange+1) or shutil.get_terminal_size()[1]<(yrange+1):
+if shutil.get_terminal_size()[0]<(xrange+2) or shutil.get_terminal_size()[1]<(yrange+2):
+  print("AW, terminal must be at least "+str(xrange+2)+"x"+str(yrange+2)+" to play the slidy puzzle. :(")
   exit()
 
 import curses
