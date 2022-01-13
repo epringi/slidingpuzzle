@@ -65,7 +65,7 @@ wd=os.path.dirname(os.path.realpath(__file__))
 for i in range(0, curses.COLORS):
   curses.init_pair(i + 1, i, -1)
 
-# define 24-bit and 8-bit.  This is clunky and could be a dict sectioned by number of colours: colours[curses.COLOURS][colour] TODO
+# define 8-bit and 4-bit.  This is clunky and could be a dict sectioned by number of colours: colours[curses.COLOURS][colour] TODO
 # To add colour to text in a .pim, add the colour name (such as lr for light red)
 # between squirrely braces like so: {lr}
 colours={
