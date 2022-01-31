@@ -204,7 +204,7 @@ init=1
 inwindow=0
 
 # show the available colours and colour help
-def colour_palate():
+def colour_palette():
   posy=int(curses.LINES/2)-int(len(colours)/4)+5
   posx=int(curses.COLS/2)-14
 
@@ -436,6 +436,32 @@ def shuffle_img():
     # seg_move() has a sanity check so we don't need it here
     seg_move()
 
+
+# Reusable code for printing a line
+def print_line(fullline):
+  global screen
+  global colours
+
+  colour=curses.color_pair(0)
+
+  # split the line up into characters and colours
+  splitline=re.split('\{|}+', str(fullline))
+
+  for pidx, piece in enumerate(splitline):
+    # if the pidx is not odd, then the piece isn't a colour: if the line starts with a colour,
+    # the split adds an empty string before it, so colours are always odd
+    if piece in colours and (pidx%2)!=0:
+      if curses.COLORS==8 and int(colours[piece])>7:
+        colour=( (int(colours[piece])-8) *256) +2097152
+      elif curses.COLORS==8:
+        colour=int(colours[piece])*256
+      else:
+        colour=(int(colours[piece])+1)*256
+    else:
+      screen.addstr(piece, colour)
+      screen.refresh()
+
+
 # print one segment
 def print_segment(seg_img, segnum):
   global segments
@@ -445,22 +471,8 @@ def print_segment(seg_img, segnum):
   posx=segments[segnum]['x']
 
   for idx, fullline in enumerate(seg_img[segnum]):
-    colour=curses.color_pair(0)
-    # split the line up into characters and colours... this could be done better
-    line=re.split('\{|}+', str(fullline))
     screen.addstr(posy, posx, "")
-    for piece in line:
-      if piece in colours:
-        if curses.COLORS==8 and int(colours[piece])>7:
-          colour=( (int(colours[piece])-8) *256) +2097152
-        elif curses.COLORS==8:
-          colour=int(colours[piece])*256
-        else:
-          colour=(int(colours[piece])+1)*256
-      else:
-        screen.addstr(piece, colour)
-        screen.refresh()
-
+    print_line(fullline)
     screen.addstr("|")
     posy=posy+1
 
@@ -477,21 +489,8 @@ def show_img():
   screen.addstr(posy-1, posx, "".ljust(xrange+1, "_"))
 
   for idx, fullline in enumerate(image):
-    colour=curses.color_pair(0)
-    line=re.split('\{|}+', str(fullline))
     screen.addstr(posy, posx, "|")
-    for pidx, piece in enumerate(line):
-      # if the pidx is not odd, then the piece isn't a colour: if the line starts with a colour,
-      # the split adds an empty string before it, so colours are always odd
-      if piece in colours and (pidx%2)!=0:
-        if curses.COLORS==8 and int(colours[piece])>7:
-          colour=( (int(colours[piece])-8) *256) +2097152
-        elif curses.COLORS==8:
-          colour=int(colours[piece])*256
-        else:
-          colour=(int(colours[piece])+1)*256
-      else:
-        screen.addstr(piece, colour)
+    print_line(fullline)
     screen.addstr(posy, posx+xrange, "|")
     screen.refresh()
     posy=posy+1
@@ -647,7 +646,7 @@ def load_img():
 
     # c cor colours
     if chars==99 or chars==67:
-      colour_palate()
+      colour_palette()
 
     # d for difficulty (choose difficulty)
     if chars==100 or chars==68:
