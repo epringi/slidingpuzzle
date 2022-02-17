@@ -32,16 +32,13 @@ except:
 
 # curses init stuff
 screen=curses.initscr()
-screen.keypad(True)
 curses.noecho()
 curses.cbreak()
-screen.keypad(True)
 curses.start_color()
 curses.use_default_colors()
 curses.curs_set(0)
-legend=curses.initscr()
-legend.keypad(True)
-#curses.COLORS=8
+curses.mousemask(1)
+screen.keypad(True)
 
 # sigint is ok
 def signal_handler(sig, frame):
@@ -242,6 +239,16 @@ def colour_palette():
   screen.refresh()
   screen.getch()
   load_img()
+
+
+def clicked_segment():
+  global segments
+  _, mx, my, _, _=curses.getmouse()
+
+  for idx, seg in enumerate(segments):
+    if 'y' in seg and my in range(seg['y'], seg['y']+7) and mx in range(seg['x'], seg['x']+20):
+      return idx
+
 
 # set the position of the segments on the screen, centered, based off available space and defined range
 # rest should be calculations based on range TODO
@@ -832,11 +839,11 @@ while 0==0:
     exit()
 
   # if in a window, only thing that can be done is exit
-  if chars!=115 and chars!=835 and chars!=113 and chars!=81 and chars!=104 and chars!=72 and chars!=27 and inwindow:
+  if chars!=115 and chars!=835 and chars!=113 and chars!=81 and chars!=104 and chars!=72 and chars!=27 and chars!=curses.KEY_MOUSE and inwindow:
     continue
 
   # s or h if in window, or esc to redraw board and exit window
-  if (chars==115 or chars==835 or chars==104 or chars==72 or chars==27) and inwindow:
+  if (chars==115 or chars==835 or chars==104 or chars==72 or chars==27 or chars==curses.KEY_MOUSE) and inwindow:
     draw_board()
     select_seg(selected_seg)
     inwindow=0
@@ -874,6 +881,14 @@ while 0==0:
       select_seg(selected_seg-size+1)
     else:
       select_seg(selected_seg+1)
+
+  if chars==curses.KEY_MOUSE:
+    draw_board()
+    selected_seg=clicked_segment()
+    seg_move()
+    if seg_img == orig_img:
+      inwindow=1
+      fanfare()
 
   # enter or spacebar moves the segment
   if chars==32 or chars==10:
