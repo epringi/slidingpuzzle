@@ -616,12 +616,19 @@ def load_img():
         imgs[idx]=img[:-7]
       imgs.insert(0, wd+"/images/Default")
 
-      for idx, file in enumerate(imgs):
-        window.append("|   "+str(idx).rjust(2)+": "+os.path.relpath(file, wd+"/images/").ljust(39)+" |")
+      for idx in range(int(len(imgs)/2)):
+        line="| "+str(idx).rjust(2)+": "+os.path.relpath(imgs[idx], wd+"/images/").ljust(18)+" "
+        if idx+int(len(imgs)/2)<len(imgs):
+          line=line+str(idx+int(len(imgs)/2)).rjust(2)+": "+os.path.relpath(imgs[idx+int(len(imgs)/2)], wd+"/images/").ljust(18)+" |"
+        else:
+          line=line+" ".ljust(22)+" |"
+        window.append(line)
+        if idx==5:
+          break
 
       if len(imgs) > 0:
         window.append("|                                               |")
-        window.append("|  Please choose an image for the puzzle (0-"+str(len(imgs)-1)+")  |")
+        window.append("|  Please choose an image for the puzzle (0-"+str(len(imgs)-1).rjust(2)+") |")
         window.append("|_______________________________________________|")
 
       else:
