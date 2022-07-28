@@ -506,7 +506,7 @@ def show_img():
 
 
 # HALP.  Info
-def help():
+def halp():
   global segments
   global size
 
@@ -822,7 +822,7 @@ def fanfare():
 
 
 load_img()
-help()
+halp()
 inwindow=1
 chars=0
 
@@ -901,7 +901,7 @@ while 0==0:
   # h for help
   if chars==104 or chars==72:
     inwindow=1
-    help()
+    halp()
 
   # s for show original img
   if chars==115 or chars==835:
