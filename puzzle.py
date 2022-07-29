@@ -238,7 +238,7 @@ def colour_palette():
   screen.addstr(posy+int(idx/2)+2, posx, "|-----------------------------------------|")
   screen.refresh()
   screen.getch()
-  load_img()
+  #load_img()
 
 
 def clicked_segment():
@@ -625,13 +625,16 @@ def load_img():
 
       for idx in range(int(len(imgs)/2)):
         line="| "+str(idx).rjust(2)+": "+os.path.relpath(imgs[idx], wd+"/images/").ljust(18)+" "
-        if idx+int(len(imgs)/2)<len(imgs):
-          line=line+str(idx+int(len(imgs)/2)).rjust(2)+": "+os.path.relpath(imgs[idx+int(len(imgs)/2)], wd+"/images/").ljust(18)+" |"
-        else:
-          line=line+" ".ljust(22)+" |"
+        #if idx+int(len(imgs)/2)<len(imgs):
+        line=line+str(idx+int(len(imgs)/2)).rjust(2)+": "+os.path.relpath(imgs[idx+int(len(imgs)/2)], wd+"/images/").ljust(18)+" |"
         window.append(line)
         if idx==5:
           break
+
+      if (len(imgs)%2)!=0:
+        line="| "+str(len(imgs)-1).rjust(2)+": "+os.path.relpath(imgs[len(imgs)-1], wd+"/images/").ljust(18)+" "
+        line=line+" ".ljust(22)+" |"
+        window.append(line)
 
       if len(imgs) > 0:
         window.append("|                                               |")
@@ -658,16 +661,18 @@ def load_img():
 
     chars=screen.getch()
 
-    # c cor colours
-    if chars==99 or chars==67:
+    # c for colours
+    if (chars==99 or chars==67) and size != 0:
+      screen.addstr(0,0,"CPin "+str(size))
       colour_palette()
+      screen.addstr(0,0,"CPout "+str(size))
 
     # d for difficulty (choose difficulty)
-    if chars==100 or chars==68:
+    elif (chars==100 or chars==68) and size != 0:
       size=0
 
     # l or esc to leave if we aren't in init mode
-    if (chars==108 or chars==76 or chars==27) and init==0:
+    elif (chars==108 or chars==76 or chars==27) and init==0:
       size=tsize
       set_segments()
       draw_board()
@@ -675,7 +680,7 @@ def load_img():
       break
 
     # q to quit
-    if chars==113 or chars==81:
+    elif chars==113 or chars==81:
       curses.nocbreak()
       screen.keypad(False)
       curses.echo()
@@ -683,7 +688,7 @@ def load_img():
       exit()
 
     # if numbers chosen and size is 0 then it's choose a size
-    if chars>=52 and chars<=54 and size==0:
+    elif chars>=52 and chars<=54 and size==0:
       # but not if the screen is too small!
       if ((curses.COLS<((5*20)+2) or curses.LINES<((5*7)+2)) and chars==53) \
       or ((curses.COLS<((6*20)+2) or curses.LINES<((6*7)+2)) and chars==54):
@@ -695,7 +700,7 @@ def load_img():
       yrange=size*7
 
     # choose your image
-    if chars>=48 and chars<=57 and size > 0:
+    elif chars>=48 and chars<=57 and size > 0:
       if int(chr(chars))>=0 and int(chr(chars))<len(imgs):
         image=[]
         # 0 is the hard-coded default
