@@ -888,12 +888,14 @@ while 0==0:
       select_seg(selected_seg+1)
 
   if chars==curses.KEY_MOUSE:
-    draw_board()
-    selected_seg=clicked_segment()
-    seg_move()
-    if seg_img == orig_img:
-      inwindow=1
-      fanfare()
+    target_segment=clicked_segment()
+    if target_segment!=None:
+      draw_board()
+      selected_seg=target_segment
+      seg_move()
+      if seg_img == orig_img:
+        inwindow=1
+        fanfare()
 
   # enter or spacebar moves the segment
   if chars==32 or chars==10:
